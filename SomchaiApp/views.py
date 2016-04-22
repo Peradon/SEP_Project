@@ -27,7 +27,7 @@ def authen(request):  # Authentication
             # user existed
             if user.is_active:
                 # log user in
-                #login(request, user)
+                login(request, user)
                 return HttpResponse(username + " login")
             else:
                 # can't login due to constraint
