@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, models
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.core import serializers
 import json
 
 # Create your views here.
@@ -20,22 +21,21 @@ def authen(request):  # Authentication
 
         # use authenticate from Django, which is return a user object
         user = authenticate(username=username, password=password)
-        print(user)
-
         # Check if user existed
         if user is not None:
             # user existed
             if user.is_active:
                 # log user in
                 login(request, user)
-                return HttpResponse(username + " login")
+                data = {'first_name': user.first_name, 'last_name': user.last_name}
+                return HttpResponse(json.dumps(data))
             else:
                 # can't login due to constraint
-                return HttpResponse("Account disable")
+                return HttpResponse("error 1")
 
         else:
             # user not existed
-            return HttpResponse("Invalid username or password")
+            return HttpResponse("error 2")
 
 
 @csrf_exempt
@@ -64,3 +64,7 @@ def register(request):  # Register new user
                                                first_name=firstName, last_name=lastName)
         user.save()
         return HttpResponse("Complete")
+
+def logout(request):
+    return HttpResponse("logout")
+
