@@ -46,6 +46,7 @@ def logout(request):
     return HttpResponse("logout")
 
 
+@csrf_exempt
 def get_Session(request):
 
     # Query all non-expired sessions
@@ -59,8 +60,16 @@ def get_Session(request):
         data = session.get_decoded()
         uid_list.append(data.get('_auth_user_id', None))
 
+    print(uid_list)
+
+    userItem = dict()
+    i = 1
+    for items in uid_list:
+        userItem["user" + str(i)] = models.User.objects.get(id__in=items).get_full_name()
+        i += 1
+    print(userItem)
     # Query all logged in users based on id list
-    return HttpResponse(json.dumps({'user_id': models.User.objects.filter(id__in=uid_list)}))
+    return HttpResponse(json.dumps(userItem))
 
 
 
