@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, models
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, JsonResponse
-from django.core import serializers
+from django.http import HttpResponse
+from django.utils import timezone
+from django.contrib.sessions.models import Session
 import json
 
 # Create your views here.
@@ -38,33 +39,12 @@ def authen(request):  # Authentication
             return HttpResponse("error 2")
 
 
-@csrf_exempt
-def register(request):  # Register new user
-    if request.method == 'POST':
-        # Receive data from client
-        data = json.dumps(request.POST)
-        data = json.loads(data)
-
-        # Check if username already in use
-        numOfUser = models.User.objects.filter(username=data.get("username")).count()
-        if numOfUser > 0:
-            return HttpResponse("Username already in use")
-
-        # if username already existed, the rest of function is unreachable
-        # Assign to variable
-        username = data.get('username')
-        password = data.get('password')
-        firstName = data.get('first_name')
-        lastName = data.get('last_name')
-        email = data.get('email')
-        phone = data.get('phone')
-
-        # create user and save
-        user = models.User.objects.create_user(username=username, email=email, password=password,
-                                               first_name=firstName, last_name=lastName)
-        user.save()
-        return HttpResponse("Complete")
-
 def logout(request):
     return HttpResponse("logout")
+
+def get_Session(request):
+
+    session = Session.objects.filter(expire_date__gte=timezone.now())
+
+
 
