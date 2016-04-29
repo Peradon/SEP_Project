@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login, models
+from django.contrib.auth import authenticate, login, models, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.utils import timezone
+from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 import json
 
@@ -25,10 +26,11 @@ def authen(request):  # Authentication
         # Check if user existed
         if user is not None:
             # user existed
-            if user.is_active:
+            if user.is_authenticated:
                 # log user in
                 login(request, user)
                 data = {'first_name': user.first_name, 'last_name': user.last_name}
+                print(request.session.session_key)
                 return HttpResponse(json.dumps(data))
             else:
                 # can't login due to constraint
@@ -36,13 +38,20 @@ def authen(request):  # Authentication
 
         else:
             # user not existed
-            return HttpResponse("error 2")
+            return HttpResponse("Invalid username or password")
 
 def todo(request):
     pass
 
 
-def logout(request):
+@csrf_exempt
+def signOut(request):
+    # user = request.POST
+    # user = User.objects.get(first_name=user)
+    # [s.delete() for s in Session.objects.all() if s.get_decoded().get('_auth_user_id') == user.id]
+    # user.is_active = False
+    print(request.session.session_key)
+    logout(request)
     return HttpResponse("logout")
 
 
