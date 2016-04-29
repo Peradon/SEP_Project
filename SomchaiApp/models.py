@@ -11,12 +11,8 @@ class UserModel(models.Model):
     position = models.CharField(max_length=50, default="None")
 
 class TodoList(models.Model):
-    #employee
-    user=models.ForeignKey(User,unique=True,primary_key=True)
-    #task description
-    taskDescription = models.CharField(max_length=100)
-    start=models.DateTimeField()
-    end=models.DateTimeField()
+    user=models.ForeignKey(Account,on_delete=models.CASCADE,related_name="todolist")
+    taskDescription=models.TextField('taskDescription',max_length=1000,null=False)
 
 class Reservation(models.Model):
     topic=models.CharField(max_length=50)

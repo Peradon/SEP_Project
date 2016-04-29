@@ -80,5 +80,18 @@ def get_Session(request):
     # Query all logged in users based on id list
     return HttpResponse(json.dumps(userItem))
 
+    def addTodo(request):
+        if request.method == 'POST':
+            data = json.dumps(request.POST)
+            data = json.loads(data)
+            user = data.get("user")
+            taskd = data.get("taskDescription")
+            responseJsons = {}
+            if user is not None and taskd is not None:
+                tdlist=TodoList(user=user,taskDescription=taskd)
+                tdlist.save()
+
+            return HttpResponse("todo added")
+
 
 

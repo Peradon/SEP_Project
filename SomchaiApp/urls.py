@@ -6,5 +6,5 @@ urlpatterns = [
     url(r'^logout', views.signOut, name='logout'),
     url(r'^get_session', views.get_Session, name='get session'),
     # ****
-    url(r'^todo', views.todo, name='todo'),
+    url(r'^addTodo', views.addTodo, name='addTodo')
 ]
